@@ -1,18 +1,13 @@
-package com.upgrad.technicalblogpost.Controller;
-
+package com.upgrad.technicalblogpost.Service;
 import com.upgrad.technicalblogpost.model.Post;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
-@Controller
-public class HomeController {
-    @RequestMapping("/")
-    public String getAllPosts(Model model){
-        ArrayList<Post> posts = new ArrayList<>();
 
+@Service
+public class PostService {
+    private static ArrayList<Post> POSTS=new ArrayList<Post>();
+    static {
         Post post1= new Post();
         post1.setTitle("Mirzapur");
         post1.setBody("Kalin Bhaia ki sarkar");
@@ -28,11 +23,15 @@ public class HomeController {
         post3.setBody("Modi ke sarkar");
         post3.setDate(new Date());
 
-        posts.add(post1);
-        posts.add(post2);
-        posts.add(post3);
+        POSTS.add(post1);
+        POSTS.add(post2);
+        POSTS.add(post3);
+    }
 
-        model.addAttribute("posts",posts);
-        return "index";
+    public ArrayList<Post> getAllPosts(){
+        return POSTS;
+    }
+    public void createPost(Post newPost){
+        POSTS.add(newPost);
     }
 }

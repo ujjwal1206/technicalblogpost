@@ -3,6 +3,7 @@ import com.upgrad.technicalblogpost.model.Post;
 import com.upgrad.technicalblogpost.model.User;
 import com.upgrad.technicalblogpost.Service.PostService;
 import com.upgrad.technicalblogpost.Service.UserService;
+import com.upgrad.technicalblogpost.model.UserProfile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +13,9 @@ import java.util.List;
 
 @Controller
 public class UserController {
+    public UserController(){
+        System.out.println("*********** UserController ***********");
+    }
     // URL : users/login
     @Autowired
     private UserService userService;
@@ -30,25 +34,30 @@ public class UserController {
     public String loginUser(User user){
         System.out.println(user.getUsername());
         System.out.println(user.getPassword());
-        if(userService.login(user)){
+        User existingUser = userService.login(user);
+        if(existingUser != null){
+            System.out.println("You are Authenticated");
+            //TODO: use session
             return "redirect:/posts"; //localhost:8080/posts : GET
         }else{
+            System.out.println("You are NOT Authenticated, Get lost");
             return "users/login"; //localhost:8080/users/login : GET
         }
     }
 
 
     @RequestMapping("users/registration")
-    public String registration(){
+    public String registration(Model model){
+        User user = new User();
+        UserProfile profile= new UserProfile();
+        user.setProfile(profile);
+        model.addAttribute("User", user);
         return "users/registration";
     }
     @RequestMapping(value="users/registration", method= RequestMethod.POST)
     public String registerUser(User user){
-        System.out.println(user.getFullname());
-        System.out.println(user.getUsername());
-        System.out.println(user.getPassword());
-        //TODO : service code to register the user so that you can login with that creds
-        return "redirect:/users/login";
+        userService.registerUser(user);
+        return "users/login";
     }
     //TODO: logout feature: done
     public String logout(Model model){
